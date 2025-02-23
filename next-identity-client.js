@@ -55,7 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.removeItem('profile');
       profileInfo.style.display = 'none';
       loginButton.style.display = 'block';
-      logoutButton.style.display = 'none';
+      const authUrl = new URL(`${config.issuer}/endsession`);
+        authUrl.searchParams.set('client_id', config.clientId);
+        authUrl.searchParams.set('post_logout_redirect_uri', config.redirectUri);
+        window.location.href = authUrl.toString();
     }
   };
 
@@ -118,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
       profileDetails.textContent = JSON.stringify(profile, null, 2);
       profileInfo.style.display = 'block';
       loginButton.style.display = 'none';
-      logoutButton.style.display = 'block';
   }
 
 
