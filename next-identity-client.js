@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.removeItem('profile');
       profileInfo.style.display = 'none';
       loginButton.style.display = 'block';
-
+      logoutButton.style.display = 'none';
     }
   };
 
