@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
       profileDetails.textContent = JSON.stringify(profile, null, 2);
       profileInfo.style.display = 'block';
       loginButton.style.display = 'none';
-      logoutButton.style.display = 'block';
   }
 
 
