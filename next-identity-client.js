@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         authUrl.searchParams.set('client_id', config.clientId);
         authUrl.searchParams.set('post_logout_redirect_uri', config.redirectUri);
         window.location.href = authUrl.toString();
+        console.log(authUrl);
     }
   };
 
