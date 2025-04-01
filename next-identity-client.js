@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
     nextIdentity.getToken(code)
       .then(tokenResponse => {
         localStorage.setItem('jwt', tokenResponse);
+        localStorage.setItem('id_token', tokenResponse.id_token);
+        localStorage.setItem('decoded id_token', JSON.stringify(atob(tokenResponse.id_token.split('.')[1])));
         return nextIdentity.getUserInfo(tokenResponse.access_token)
       })
       .then(profile => {
