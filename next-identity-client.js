@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Exchange code for token and get user info
     nextIdentity.getToken(code)
       .then(tokenResponse => {
-        localStorage.setItem('access_token', tokenResponse.access_token);
+        localStorage.setItem('jwt', tokenResponse);
         return nextIdentity.getUserInfo(tokenResponse.access_token)
       })
       .then(profile => {
