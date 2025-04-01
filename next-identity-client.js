@@ -2,7 +2,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loginButton = document.getElementById('login-button');
   const profileInfo = document.getElementById('profile-info');
+  const idTokenInfo = document.getElementById('idToken-info');
   const profileDetails = document.getElementById('profile-details');
+  const idTokenDetails = document.getElementById('idToken-details');
   const logoutButton = document.getElementById('logout-button');
 
   const nextIdentity = {
@@ -52,8 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     logout: () => {
       localStorage.removeItem('access_token');
-      localStorage.removeItem('profile');
+      localStorage.removeItem('id_token');
+      localStorage.removeItem('user_info');
       profileInfo.style.display = 'none';
+      idTokenInfo.style.display = 'none';
       loginButton.style.display = 'block';
       const authUrl = new URL(`${config.issuer}/endsession`);
         authUrl.searchParams.set('client_id', config.clientId);
@@ -98,28 +102,54 @@ document.addEventListener('DOMContentLoaded', () => {
   if (code) {
     // Exchange code for token and get user info
     nextIdentity.getToken(code)
-      .then(tokenResponse => {
-        localStorage.setItem('jwt', tokenResponse);
-        localStorage.setItem('id_token', tokenResponse.id_token);
-        localStorage.setItem('decoded id_token', JSON.stringify(atob(tokenResponse.id_token.split('.')[1])));
-        return nextIdentity.getUserInfo(tokenResponse.access_token)
-      })
-      .then(profile => {
-        //localStorage.setItem('profile', JSON.stringify(profile));
-        localStorage.setItem('profile', JSON.stringify(atob(tokenResponse.id_token.split('.')[1]))); 
-        displayProfile(profile);
-      })
-      .catch(error => console.error("Error during authentication:", error));
-
+    .then(tokenResponse => {
+      // Store access token in local storage
+      localStorage.setItem('access_token', tokenResponse.access_token);
+      
+      // Decode and store ID token
+      const idTokenParts = tokenResponse.id_token.split('.');
+      const decodedIdToken = JSON.parse(atob(idTokenParts[1]));
+      localStorage.setItem('id_token', JSON.stringify(decodedIdToken));
+      
+      // Get user info using the access token
+      return nextIdentity.getUserInfo(tokenResponse.access_token)
+        .then(userInfo => {
+          // Store user info in local storage
+          localStorage.setItem('user_info', JSON.stringify(userInfo));
+          
+          return {
+            idToken: decodedIdToken,
+            userInfo: userInfo
+          };
+        });
+    })
+    .then(profile => {
+      // Display both profile and ID token
+      displayProfile(profile.userInfo);
+      displayIdToken(profile.idToken);
+      
       // Clear the code from URL for security
       window.history.pushState({}, document.title, window.location.pathname);
+    })
+    .catch(error => console.error("Error during authentication:", error));
   } else {
-      const storedProfile = localStorage.getItem('profile');
-      if (storedProfile) {
-          displayProfile(JSON.parse(storedProfile));
-      }
+    // Check if we have stored profile and token
+    const storedUserInfo = localStorage.getItem('user_info');
+    const storedIdToken = localStorage.getItem('id_token');
+    
+    if (storedUserInfo && storedIdToken) {
+      displayProfile(JSON.parse(storedUserInfo));
+      displayIdToken(JSON.parse(storedIdToken));
+      profileInfo.style.display = 'block';
+      idTokenInfo.style.display = 'block';
+      loginButton.style.display = 'none';
+    }
   }
 
+  function displayIdToken(idToken) {
+      idTokenDetails.textContent = JSON.stringify(idToken, null, 2);
+      idTokenInfo.style.display = 'block';
+  }
 
   function displayProfile(profile) {
       profileDetails.textContent = JSON.stringify(profile, null, 2);
