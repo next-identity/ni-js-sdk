@@ -103,7 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return nextIdentity.getUserInfo(tokenResponse.access_token)
       })
       .then(profile => {
-        localStorage.setItem('profile', JSON.stringify(profile));
+        //localStorage.setItem('profile', JSON.stringify(profile));
+        localStorage.setItem('profile', JSON.stringify(atob(tokenResponse.id_token.split('.')[1]))); 
         displayProfile(profile);
       })
       .catch(error => console.error("Error during authentication:", error));
