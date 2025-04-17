@@ -1,11 +1,8 @@
 // app.js
 document.addEventListener('DOMContentLoaded', () => {
   const loginButton = document.getElementById('login-button');
-  const profileInfo = document.getElementById('profile-info');
-  const idTokenInfo = document.getElementById('idToken-info');
-  const profileDetails = document.getElementById('profile-details');
-  const idTokenDetails = document.getElementById('idToken-details');
   const logoutButton = document.getElementById('logout-button');
+  const userDisplayDiv = document.getElementById('user-display');
 
   const nextIdentity = {
     authorize: () => {
@@ -56,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.removeItem('access_token');
       localStorage.removeItem('id_token');
       localStorage.removeItem('user_info');
-      profileInfo.style.display = 'none';
-      idTokenInfo.style.display = 'none';
+      userDisplayDiv.textContent = '';
       loginButton.style.display = 'block';
+      logoutButton.style.display = 'none';
       const authUrl = new URL(`${config.issuer}/endsession`);
         authUrl.searchParams.set('client_id', config.clientId);
         authUrl.searchParams.set('post_logout_redirect_uri', config.redirectUri);
@@ -124,9 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     })
     .then(profile => {
-      // Display both profile and ID token
-      displayProfile(profile.userInfo);
-      displayIdToken(profile.idToken);
+      // Display user info and update UI
+      displayUserInfo(profile.userInfo);
       
       // Clear the code from URL for security
       window.history.pushState({}, document.title, window.location.pathname);
@@ -135,28 +131,32 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     // Check if we have stored profile and token
     const storedUserInfo = localStorage.getItem('user_info');
-    const storedIdToken = localStorage.getItem('id_token');
     
-    if (storedUserInfo && storedIdToken) {
-      displayProfile(JSON.parse(storedUserInfo));
-      displayIdToken(JSON.parse(storedIdToken));
-      profileInfo.style.display = 'block';
-      idTokenInfo.style.display = 'block';
-      loginButton.style.display = 'none';
+    if (storedUserInfo) {
+      displayUserInfo(JSON.parse(storedUserInfo));
     }
   }
 
-  function displayIdToken(idToken) {
-      idTokenDetails.textContent = JSON.stringify(idToken, null, 2);
-      idTokenInfo.style.display = 'block';
-  }
-
-  function displayProfile(profile) {
-      profileDetails.textContent = JSON.stringify(profile, null, 2);
-      profileInfo.style.display = 'block';
+  function displayUserInfo(userInfo) {
+    if (userInfo) {
+      // Display given_name or email or nothing based on what's available
+      displayUserIdentifier(userInfo);
+      
+      // Update UI for logged in state
       loginButton.style.display = 'none';
+      logoutButton.style.display = 'block';
+    }
   }
-
+  
+  function displayUserIdentifier(userInfo) {
+    if (userInfo.given_name) {
+      userDisplayDiv.textContent = userInfo.given_name;
+    } else if (userInfo.email) {
+      userDisplayDiv.textContent = userInfo.email;
+    } else {
+      userDisplayDiv.textContent = '';
+    }
+  }
 
   function generateRandomString(length) {
     let result = '';
