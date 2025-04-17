@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => console.error("Error generating code challenge:", error));
     },
     getToken: async (code) => {
-      const tokenUrl = new URL(`${config.issuer}/token`);
+      const tokenUrl = new URL(`${config.tokenIssuer}/token`);
       const codeVerifier = localStorage.getItem('code_verifier'); // Retrieve from storage
       tokenUrl.searchParams.set('grant_type', 'authorization_code');
       tokenUrl.searchParams.set('code', code);
