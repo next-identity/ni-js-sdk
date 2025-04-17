@@ -72,6 +72,42 @@ if (nextIdentity.hasValidAccessToken()) {
 }
 ```
 
+### Protecting Content with Authentication
+Here's how to gate content on a page that requires authentication:
+
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  // Check if user has valid access token
+  if (!nextIdentity.hasValidAccessToken()) {
+    // No valid token found, redirect to homepage
+    window.location.href = '/index.html';
+    return;
+  }
+  
+  // User is authenticated, show protected content
+  const protectedContent = document.getElementById('protected-content');
+  if (protectedContent) {
+    protectedContent.style.display = 'block';
+  }
+  
+  // Optional: Load user-specific data
+  const accessToken = localStorage.getItem('access_token');
+  fetch('/api/user-data', {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Process user data
+    console.log('User data:', data);
+  })
+  .catch(error => {
+    console.error('Error fetching user data:', error);
+  });
+});
+```
+
 ## 5. Add a Custom Function
 You can add a new function to enhance the SDK with additional capabilities.
 
