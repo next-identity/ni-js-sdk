@@ -41,11 +41,13 @@ The SDK now includes a simplified way to display user information. It will show 
 Add a div with the ID `user-display` to your HTML:
 ```html
 <div id="user-display"></div>
+<div id="user-email"></div>
 ```
 
 ### How it Works
 The SDK automatically handles:
-- Displaying the user's given name (or email as fallback)
+- Displaying the user's given name in the user-display element
+- Displaying the user's email in the user-email element
 - Toggling login/logout button visibility based on authentication state
 - Clearing user information on logout
 
@@ -54,6 +56,20 @@ The SDK automatically handles:
 <button id="login-button">Log In</button>
 <button id="logout-button" style="display: none;">Log Out</button>
 <div id="user-display"></div>
+<div id="user-email"></div>
+```
+
+### Checking Authentication Status
+The SDK provides a simple method to check if the user has a valid access token:
+
+```javascript
+if (nextIdentity.hasValidAccessToken()) {
+  // User is authenticated
+  console.log("User is logged in");
+} else {
+  // User is not authenticated
+  console.log("User is not logged in");
+}
 ```
 
 ## 5. Add a Custom Function
