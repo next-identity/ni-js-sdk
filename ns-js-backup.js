@@ -3,6 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
     const userDisplayDiv = document.getElementById('user-display');
+    const userEmailDiv = document.getElementById('user-email');
+  
+    // Check for logout parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('logout') === 'true') {
+      logoutButton.style.display = 'none';
+      // Clear the URL parameters
+      window.history.pushState({}, document.title, window.location.pathname);
+    }
   
     const nextIdentity = {
       authorize: () => {
@@ -59,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('id_token');
         localStorage.removeItem('user_info');
         userDisplayDiv.textContent = '';
+        userEmailDiv.textContent = '';
         loginButton.style.display = 'block';
         logoutButton.style.display = 'none';
         const authUrl = new URL(`${config.issuer}/endsession`);
@@ -99,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     // Handle the callback
-    const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     if (code) {
       // Exchange code for token and get user info
@@ -156,10 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayUserIdentifier(userInfo) {
       if (userInfo.given_name) {
         userDisplayDiv.textContent = userInfo.given_name;
-      } else if (userInfo.email) {
-        userDisplayDiv.textContent = userInfo.email;
       } else {
         userDisplayDiv.textContent = '';
+      }
+      
+      if (userInfo.email) {
+        userEmailDiv.textContent = userInfo.email;
+      } else {
+        userEmailDiv.textContent = '';
       }
     }
   
