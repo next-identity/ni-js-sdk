@@ -34,7 +34,29 @@ function logout() {
 }
 ```
 
-## 4. Add a Custom Function
+## 4. User Information Display
+The SDK now includes a simplified way to display user information. It will show either the user's given name or email address (whichever is available) in a designated HTML element.
+
+### Setup the User Display Element
+Add a div with the ID `user-display` to your HTML:
+```html
+<div id="user-display"></div>
+```
+
+### How it Works
+The SDK automatically handles:
+- Displaying the user's given name (or email as fallback)
+- Toggling login/logout button visibility based on authentication state
+- Clearing user information on logout
+
+### Example HTML Structure
+```html
+<button id="login-button">Log In</button>
+<button id="logout-button" style="display: none;">Log Out</button>
+<div id="user-display"></div>
+```
+
+## 5. Add a Custom Function
 You can add a new function to enhance the SDK with additional capabilities.
 
 ### Example: Fetch User Info After Login
@@ -56,7 +78,7 @@ async function getUserInfo() {
 }
 ```
 
-## 5. Rebuild and Use the Modified SDK
+## 6. Rebuild and Use the Modified SDK
 After making changes, rebuild the SDK to generate an updated version:
 ```sh
 npm run build
@@ -71,14 +93,14 @@ getUserInfo();
 logout();
 ```
 
-## 6. Testing Locally
+## 7. Testing Locally
 Run the development server to test your changes:
 ```sh
 npm run dev
 ```
 This will allow you to verify that your modifications work as expected before deploying.
 
-## 7. Deploying Your Custom SDK
+## 8. Deploying Your Custom SDK
 To publish your modified SDK:
 1. Commit and push your changes to a repository.
 2. If using a CDN, upload the modified `next-identity-client.js`.

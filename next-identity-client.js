@@ -25,18 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => console.error("Error generating code challenge:", error));
     },
     getToken: async (code) => {
-      const tokenUrl = new URL(`${config.tokenIssuer}/token`);
+      const tokenUrl = `${config.tokenIssuer}/token`;
       const codeVerifier = localStorage.getItem('code_verifier'); // Retrieve from storage
-      tokenUrl.searchParams.set('grant_type', 'authorization_code');
-      tokenUrl.searchParams.set('code', code);
-      tokenUrl.searchParams.set('redirect_uri', config.redirectUri);
-      tokenUrl.searchParams.set('client_id', config.clientId);
-      tokenUrl.searchParams.set('code_verifier', codeVerifier); // Include code verifier
+      
+      const params = new URLSearchParams();
+      params.append('grant_type', 'authorization_code');
+      params.append('code', code);
+      params.append('redirect_uri', config.redirectUri);
+      params.append('client_id', config.clientId);
+      params.append('code_verifier', codeVerifier); // Include code verifier
+      
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
+        body: params
       });
       return await response.json();
     },
