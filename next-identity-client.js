@@ -28,19 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const tokenUrl = `${config.tokenIssuer}/token`;
       const codeVerifier = localStorage.getItem('code_verifier'); // Retrieve from storage
       
-      const params = new URLSearchParams();
-      params.append('grant_type', 'authorization_code');
-      params.append('code', code);
-      params.append('redirect_uri', config.redirectUri);
-      params.append('client_id', config.clientId);
-      params.append('code_verifier', codeVerifier); // Include code verifier
+      const payload = {
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: config.redirectUri,
+        client_id: config.clientId,
+        code_verifier: codeVerifier
+      };
       
       const response = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: params
+        body: JSON.stringify(payload)
       });
       return await response.json();
     },
