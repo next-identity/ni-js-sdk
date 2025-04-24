@@ -33,6 +33,44 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       .catch(error => console.error("Error generating code challenge:", error));
     },
+    register: () => {
+      // Generate code verifier and challenge
+      const codeVerifier = generateRandomString(128);
+      generateCodeChallenge(codeVerifier)
+      .then(codeChallenge => {
+          localStorage.setItem('code_verifier', codeVerifier); // Store for later use
+
+          const registerUrl = new URL(`${config.issuer}/register`);
+          registerUrl.searchParams.set('response_type', 'code');
+          registerUrl.searchParams.set('client_id', config.clientId);
+          registerUrl.searchParams.set('redirect_uri', config.redirectUri);
+          registerUrl.searchParams.set('scope', config.scopes.join(' '));
+          registerUrl.searchParams.set('state', generateRandomString(32));
+          registerUrl.searchParams.set('code_challenge', codeChallenge);
+          registerUrl.searchParams.set('code_challenge_method', 'S256');
+          window.location.href = registerUrl.toString();
+        })
+      .catch(error => console.error("Error generating code challenge:", error));
+    },
+    editProfile: () => {
+      // Generate code verifier and challenge
+      const codeVerifier = generateRandomString(128);
+      generateCodeChallenge(codeVerifier)
+      .then(codeChallenge => {
+          localStorage.setItem('code_verifier', codeVerifier); // Store for later use
+
+          const profileUrl = new URL(`${config.issuer}/personal-details`);
+          profileUrl.searchParams.set('response_type', 'code');
+          profileUrl.searchParams.set('client_id', config.clientId);
+          profileUrl.searchParams.set('redirect_uri', config.redirectUri);
+          profileUrl.searchParams.set('scope', config.scopes.join(' '));
+          profileUrl.searchParams.set('state', generateRandomString(32));
+          profileUrl.searchParams.set('code_challenge', codeChallenge);
+          profileUrl.searchParams.set('code_challenge_method', 'S256');
+          window.location.href = profileUrl.toString();
+        })
+      .catch(error => console.error("Error generating code challenge:", error));
+    },
     getToken: async (code) => {
       const tokenUrl = `${config.tokenIssuer}/token`;
       const codeVerifier = localStorage.getItem('code_verifier'); // Retrieve from storage
@@ -111,6 +149,22 @@ document.addEventListener('DOMContentLoaded', () => {
   logoutButton.addEventListener('click', () => {
     nextIdentity.logout();
   });
+  
+  // Add registration functionality if register button exists
+  const registerButton = document.getElementById('register-button');
+  if (registerButton) {
+    registerButton.addEventListener('click', () => {
+      nextIdentity.register();
+    });
+  }
+  
+  // Add edit profile functionality if edit profile button exists
+  const editProfileButton = document.getElementById('edit-profile-button');
+  if (editProfileButton) {
+    editProfileButton.addEventListener('click', () => {
+      nextIdentity.editProfile();
+    });
+  }
 
   // Handle the callback
   const code = urlParams.get('code');

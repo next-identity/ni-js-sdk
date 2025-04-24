@@ -59,6 +59,67 @@ The SDK automatically handles:
 <div id="user-email"></div>
 ```
 
+### Implementing Registration
+The SDK includes a registration feature that allows users to create new accounts. The registration flow uses the same parameters as login but directs users to the registration form.
+
+#### Adding a Registration Button
+To add registration functionality to your application, include a button with the ID `register-button` in your HTML:
+
+```html
+<button id="register-button">Register</button>
+```
+
+The SDK automatically detects this button and attaches a click event that redirects users to the registration form.
+
+#### Example HTML with Registration
+```html
+<button id="login-button">Log In</button>
+<button id="logout-button" style="display: none;">Log Out</button>
+<button id="register-button">Register</button>
+<div id="user-display"></div>
+<div id="user-email"></div>
+```
+
+#### Programmatic Registration
+You can also trigger registration programmatically by calling the `register()` method:
+
+```javascript
+document.getElementById('custom-register-btn').addEventListener('click', () => {
+  nextIdentity.register();
+});
+```
+
+### Implementing Profile Editing
+The SDK includes a profile editing feature that allows users to update their account information. The profile editing flow uses the same parameters as login and registration but directs users to the personal details form.
+
+#### Adding a Profile Edit Button
+To add profile editing functionality to your application, include a button with the ID `edit-profile-button` in your HTML:
+
+```html
+<button id="edit-profile-button">Edit Profile</button>
+```
+
+The SDK automatically detects this button and attaches a click event that redirects users to the profile editing form.
+
+#### Example HTML with Profile Editing
+```html
+<button id="login-button">Log In</button>
+<button id="logout-button" style="display: none;">Log Out</button>
+<button id="register-button">Register</button>
+<button id="edit-profile-button">Edit Profile</button>
+<div id="user-display"></div>
+<div id="user-email"></div>
+```
+
+#### Programmatic Profile Editing
+You can also trigger profile editing programmatically by calling the `editProfile()` method:
+
+```javascript
+document.getElementById('custom-profile-btn').addEventListener('click', () => {
+  nextIdentity.editProfile();
+});
+```
+
 ### Checking Authentication Status
 The SDK provides a simple method to check if the user has a valid access token:
 
